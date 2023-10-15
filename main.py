@@ -88,6 +88,9 @@ def calc_rel_freq(h, k, massiv, intervals, intervals_gist):
     plt.title('Диаграмма относительных частот')
     plt.show()
 
+            ## Пункт 2
+
+
 
 
     
@@ -100,7 +103,7 @@ def calc_rel_freq(h, k, massiv, intervals, intervals_gist):
 
 
 
-    ## Пункт 4
+            ## Пункт 4
 
 ## функция вычисления математического ожидания
 def calc_mean(massiv):
