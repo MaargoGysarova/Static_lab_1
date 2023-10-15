@@ -147,6 +147,37 @@ def plot_abs_freq_and_teor_freq(massiv,intervals, intervals_gist, h,k):
     plt.show()
     plt.show()
 
+##Построить по выборке график эмпирической функции распределения случайной величины X
+# (кумуляту относительных частот) и график
+# теоретической функции распределения  случайной величины X
+def plot_empiric_and_teor_func(massiv,intervals, intervals_gist, h,k):
+    rel_freq = []
+    ## вычисление относительных частот
+    for i in range(int(k)):
+        rel_freq.append(0)
+        for j in massiv:
+            if intervals[i][0] <= j < intervals[i][1]:
+                rel_freq[i] += 1
+        rel_freq[i] /= len(massiv)
+    cumulative_y = np.cumsum(rel_freq)
+    plt.step(intervals_gist, cumulative_y, color='blue', label='Эмпирическая функция распределения')
+    plt.xlabel('Значение')
+    plt.ylabel('Эмпирическая функция распределения')
+    plt.title('График эмпирической функции распределения')
+    plt.show()
+
+    ##график теоретической функции распределения
+    x = np.linspace(a - 4*sigma, a + 4*sigma, n_points)
+    y = norm.cdf(x, a, sigma)
+    plt.plot(x, y, color='red', label='Теоретическая функция распределения')
+    plt.xlabel('Значение')
+    plt.ylabel('Теоретическая функция распределения')
+    plt.title('График теоретической функции распределения')
+    plt.legend()
+    plt.show()
+    plt.show()
+
+
 
     ## Пункт 4
 
@@ -241,5 +272,9 @@ plot_rel_freq(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_sco
 plot_abs_freq_and_teor_freq(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
                 interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
                 calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
+
+plot_empiric_and_teor_func(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
+                interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
+                           calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
 
 ##Пункт 3
