@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import scipy.stats as sts
 import math
 
+from scipy.stats import norm
+
 sigma = 1
 a = -2
 n_points = 110
@@ -99,7 +101,7 @@ def calc_rel_freq(h, k, massiv, intervals, intervals_gist):
 
 
 ## Построить гистограмму и теоритеческую кривую относительных частот
-def plot_rel_freq(massiv,intervals, intervals_gist, h,k):
+def plot_rel_freq(massiv,intervals, intervals_gist, h, k):
     rel_freq = []
     ## вычисление относительных частот
     for i in range(int(k)):
@@ -110,7 +112,6 @@ def plot_rel_freq(massiv,intervals, intervals_gist, h,k):
         rel_freq[i] /= len(massiv)
     plt.bar(intervals_gist, rel_freq, width=h, align='edge')
     plt.title('Гистограмма относительных частот')
-    plt.show()
     x = np.linspace(a - 4*sigma, a + 4*sigma, n_points)
     ## плотность распределения
     y = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-(x - a) ** 2 / (2 * sigma ** 2))
@@ -120,6 +121,32 @@ def plot_rel_freq(massiv,intervals, intervals_gist, h,k):
     plt.title('Гистограмма относительных частот и теоретическая кривая распределения')
     plt.legend()
     plt.show()
+    plt.show()
+
+##Построить гистограмму абсолютных частот и график теоретической частоты распределения
+def plot_abs_freq_and_teor_freq(massiv,intervals, intervals_gist, h,k):
+    abs_freq = []
+    ## вычисление абсолютных частот
+    for i in range(int(k)):
+        abs_freq.append(0)
+        for j in massiv:
+            if intervals[i][0] <= j < intervals[i][1]:
+                abs_freq[i] += 1
+    plt.bar(intervals_gist, abs_freq, width=h, align='edge')
+    plt.title('Гистограмма абсолютных частот')
+    ## теоретическая частота распределения случайной величины X
+    x = np.linspace(a - 4*sigma, a + 4*sigma, n_points)
+    y1 = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-(x - a) ** 2 / (2 * sigma ** 2))
+    y = (h * n_points * y1) / sigma
+    plt.plot(x, y, color='green', label='Теоретическая частота')
+    plt.xlabel('Интервалы')
+    plt.xlabel('Значение')
+    plt.ylabel('Относительная частота')
+    plt.title('Теоретическая кривая относительных частот для нормального распределения')
+    plt.legend()
+    plt.show()
+    plt.show()
+
 
     ## Пункт 4
 
@@ -211,6 +238,8 @@ plot_rel_freq(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_sco
                 interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
                 calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
 
-
+plot_abs_freq_and_teor_freq(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
+                interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
+                calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
 
 ##Пункт 3
