@@ -1,5 +1,5 @@
 ##  (-2;9)//	110//	1,25//	4	Скотта	// t-распределение Стьюдента  с числом степеней свободы k=7
-
+from pandas import DataFrame
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as sts
@@ -176,6 +176,17 @@ def plot_empiric_and_teor_func(massiv,intervals, intervals_gist, h,k):
     plt.show()
     plt.show()
 
+##Построить по выборке бокс-плот распределения
+def plot_boxplot(massiv):
+    data_frame = DataFrame(data=massiv, columns=['X'])
+    data_frame.boxplot(figsize=(7, 7))
+    data_frame.quantile([0.25, 0.5, 0.75])
+    print(data_frame.quantile([0.25, 0.5, 0.75]))
+    plt.title('Бокс-плот распределения')
+    plt.show()
+
+
+
 
 
     ## Пункт 4
@@ -276,4 +287,5 @@ plot_empiric_and_teor_func(massiv, interval_grouping(calc_k_scott(110, massiv)[0
                 interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
                            calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
 
+plot_boxplot(massiv)
 ##Пункт 3
