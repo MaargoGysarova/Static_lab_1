@@ -33,18 +33,23 @@ def calc_k_scott(n_points, massiv):
     print('k = ', k)
     return h, k
 
-
-## вычисление суммы абсолютных частот в интервалах группировки и построить диагармму ассолютных частот
-def calc_abs_freq(h, k, massiv):
-    ## абсолютные частоты в интервалах группировки
-    abs_freq = []
+def interval_grouping(h, k, massiv):
     intervals = []
-    print(massiv.min())
     for i in range(int(k)):
         intervals.append([massiv.min() + h * i, massiv.min() + h * (i + 1)])
     print('Количество интервалов: ', k)
     print('Длина интервала: ', h)
     print('Интервалы: ', intervals)
+    intervals_gist = []
+    for i in range(int(k)):
+        intervals_gist.append(intervals[i][0])
+    return intervals, intervals_gist
+
+
+## вычисление суммы абсолютных частот в интервалах группировки и построить диагармму ассолютных частот
+def calc_abs_freq(h, k, massiv, intervals, intervals_gist):
+    ## абсолютные частоты в интервалах группировки
+    abs_freq = []
     ## вычисление абсолютных частот
     for i in range(int(k)):
         abs_freq.append(0)
@@ -58,12 +63,32 @@ def calc_abs_freq(h, k, massiv):
         sum_abs_freq += i
     print('Сумма абсолютных частот: ', sum_abs_freq)
     ## построение диаграммы абсолютных частот
-    intervals_gist = []
-    for i in range(int(k)):
-        intervals_gist.append(intervals[i][0])
     plt.bar(intervals_gist, abs_freq, width=h, align='edge')
     plt.title('Диаграмма абсолютных частот')
     plt.show()
+
+def calc_rel_freq(h, k, massiv, intervals, intervals_gist):
+    ## относительные частоты в интервалах группировки
+    rel_freq = []
+## вычисление относительных частот
+    for i in range(int(k)):
+        rel_freq.append(0)
+        for j in massiv:
+            if intervals[i][0] <= j < intervals[i][1]:
+                rel_freq[i] += 1
+        rel_freq[i] /= len(massiv)
+    print('Относительные частоты: ', rel_freq)
+    ## сумма относительных частот
+    sum_rel_freq = 0
+    for i in rel_freq:
+        sum_rel_freq += i
+    print('Сумма относительных частот: ', sum_rel_freq)
+    ## построение диаграммы относительных частот
+    plt.bar(intervals_gist, rel_freq, width=h, align='edge')
+    plt.title('Диаграмма относительных частот')
+    plt.show()
+
+
 
     
 
@@ -149,7 +174,14 @@ def result_4_punkt(massiv):
 massiv = sort_massiv(generation_norm_random(-2, 3, 110))
 print(massiv.min())
 print(massiv)
-calc_abs_freq(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv)
+calc_abs_freq(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv,
+              interval_grouping(calc_k_scott(110, massiv)[0],
+                                calc_k_scott(110, massiv)[1], massiv)[0], interval_grouping(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv)[1])
+calc_rel_freq(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv,
+                interval_grouping(calc_k_scott(110, massiv)[0],
+                                calc_k_scott(110, massiv)[1], massiv)[0], interval_grouping(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv)[1])
+
+
 result_4_punkt(massiv)
 
 ##Пункт 3
