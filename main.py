@@ -164,7 +164,6 @@ def plot_empiric_and_teor_func(massiv,intervals, intervals_gist, h,k):
     plt.xlabel('Значение')
     plt.ylabel('Эмпирическая функция распределения')
     plt.title('График эмпирической функции распределения')
-    plt.show()
 
     ##график теоретической функции распределения
     x = np.linspace(a - 4*sigma, a + 4*sigma, n_points)
