@@ -22,6 +22,8 @@ def plot_norm(a=0, sigma=1, n_points=110):
     plt.hist(massiv, density=True, histtype='stepfilled', alpha=0.8)
     plt.title('Гистограмма нормального распределения')
 
+    ## Пункт 1
+
 
 ## расчет числа интервалов  и длину интервала группироваки по правилу Скотта
 def calc_k_scott(n_points, massiv):
@@ -32,36 +34,49 @@ def calc_k_scott(n_points, massiv):
     return h, k
 
 
-## вычисление стандартное отклонение значений ряда измерений в ручную
-def calc_std(massiv):
-    sum = 0
-    for i in massiv:
-        sum += i
-    mean = sum / len(massiv)
-    sum = 0
-    for i in massiv:
-        sum += (i - mean) ** 2
-    return math.sqrt(sum / (len(massiv) - 1))
-
-
 ## вычисление суммы абсолютных частот в интервалах группировки и построить диагармму ассолютных частот
-def calc_abs_freq(h, k):
-    massiv = np.random.normal(-2, 3, 110)
+def calc_abs_freq(h, k, massiv):
     ## абсолютные частоты в интервалах группировки
     abs_freq = []
     intervals = []
+    print(massiv.min())
     for i in range(int(k)):
         intervals.append([massiv.min() + h * i, massiv.min() + h * (i + 1)])
     print('Количество интервалов: ', k)
     print('Длина интервала: ', h)
     print('Интервалы: ', intervals)
-    plt.hist(massiv, bins=int(k))
+    ## вычисление абсолютных частот
+    for i in range(int(k)):
+        abs_freq.append(0)
+        for j in massiv:
+            if intervals[i][0] <= j < intervals[i][1]:
+                abs_freq[i] += 1
+    print('Абсолютные частоты: ', abs_freq)
+    ## сумма абсолютных частот
+    sum_abs_freq = 0
+    for i in abs_freq:
+        sum_abs_freq += i
+    print('Сумма абсолютных частот: ', sum_abs_freq)
+    ## построение диаграммы абсолютных частот
+    intervals_gist = []
+    for i in range(int(k)):
+        intervals_gist.append(intervals[i][0])
+    plt.bar(intervals_gist, abs_freq, width=h, align='edge')
+    plt.title('Диаграмма абсолютных частот')
     plt.show()
 
-    return abs_freq
+    
 
 
-## пункт 4
+
+
+
+
+
+
+
+    ## Пункт 4
+
 ## функция вычисления математического ожидания
 def calc_mean(massiv):
     sum = 0
@@ -81,6 +96,18 @@ def calc_disp(massiv):
 ## функция вычисления среднеквадратического отклонения
 def calc_std(massiv):
     return math.sqrt(calc_disp(massiv))
+
+
+## вычисление стандартное отклонение значений ряда измерений в ручную
+def calc_std(massiv):
+    sum = 0
+    for i in massiv:
+        sum += i
+    mean = sum / len(massiv)
+    sum = 0
+    for i in massiv:
+        sum += (i - mean) ** 2
+    return math.sqrt(sum / (len(massiv) - 1))
 
 
 ## функция вычисления коэффициента асимметрии
@@ -120,6 +147,9 @@ def result_4_punkt(massiv):
 
 
 massiv = sort_massiv(generation_norm_random(-2, 3, 110))
+print(massiv.min())
 print(massiv)
-calc_abs_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
+calc_abs_freq(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv)
 result_4_punkt(massiv)
+
+##Пункт 3
