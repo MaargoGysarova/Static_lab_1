@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 import scipy.stats as sts
 import math
 
+sigma = 1
+a = -2
+n_points = 110
+
 
 ## сортировка массива по возрастанию
 def sort_massiv(massiv):
@@ -32,6 +36,7 @@ def calc_k_scott(n_points, massiv):
     print('h = ', h)
     print('k = ', k)
     return h, k
+
 
 def interval_grouping(h, k, massiv):
     intervals = []
@@ -67,10 +72,11 @@ def calc_abs_freq(h, k, massiv, intervals, intervals_gist):
     plt.title('Диаграмма абсолютных частот')
     plt.show()
 
+
 def calc_rel_freq(h, k, massiv, intervals, intervals_gist):
     ## относительные частоты в интервалах группировки
     rel_freq = []
-## вычисление относительных частот
+    ## вычисление относительных частот
     for i in range(int(k)):
         rel_freq.append(0)
         for j in massiv:
@@ -87,23 +93,36 @@ def calc_rel_freq(h, k, massiv, intervals, intervals_gist):
     plt.bar(intervals_gist, rel_freq, width=h, align='edge')
     plt.title('Диаграмма относительных частот')
     plt.show()
+    return rel_freq
 
-            ## Пункт 2
-
-
-
-
-    
+    ## Пункт 2
 
 
+## Построить гистограмму и теоритеческую кривую относительных частот
+def plot_rel_freq(massiv,intervals, intervals_gist, h,k):
+    rel_freq = []
+    ## вычисление относительных частот
+    for i in range(int(k)):
+        rel_freq.append(0)
+        for j in massiv:
+            if intervals[i][0] <= j < intervals[i][1]:
+                rel_freq[i] += 1
+        rel_freq[i] /= len(massiv)
+    plt.bar(intervals_gist, rel_freq, width=h, align='edge')
+    plt.title('Гистограмма относительных частот')
+    plt.show()
+    x = np.linspace(a - 4*sigma, a + 4*sigma, n_points)
+    ## плотность распределения
+    y = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-(x - a) ** 2 / (2 * sigma ** 2))
+    plt.plot(x, y, color='red', label='Теоретическая кривая')
+    plt.xlabel('Интервалы')
+    plt.ylabel('Относительные частоты / Плотность вероятности')
+    plt.title('Гистограмма относительных частот и теоретическая кривая распределения')
+    plt.legend()
+    plt.show()
 
+    ## Пункт 4
 
-
-
-
-
-
-            ## Пункт 4
 
 ## функция вычисления математического ожидания
 def calc_mean(massiv):
@@ -177,14 +196,21 @@ def result_4_punkt(massiv):
 massiv = sort_massiv(generation_norm_random(-2, 3, 110))
 print(massiv.min())
 print(massiv)
-calc_abs_freq(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv,
+calc_abs_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv,
               interval_grouping(calc_k_scott(110, massiv)[0],
-                                calc_k_scott(110, massiv)[1], massiv)[0], interval_grouping(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv)[1])
-calc_rel_freq(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv,
-                interval_grouping(calc_k_scott(110, massiv)[0],
-                                calc_k_scott(110, massiv)[1], massiv)[0], interval_grouping(calc_k_scott(110, massiv)[0],calc_k_scott(110, massiv)[1], massiv)[1])
-
+                                calc_k_scott(110, massiv)[1], massiv)[0],
+              interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1])
+calc_rel_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv,
+              interval_grouping(calc_k_scott(110, massiv)[0],
+                                calc_k_scott(110, massiv)[1], massiv)[0],
+              interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1])
 
 result_4_punkt(massiv)
+
+plot_rel_freq(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
+                interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
+                calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
+
+
 
 ##Пункт 3
