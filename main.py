@@ -185,8 +185,25 @@ def plot_boxplot(massiv):
     plt.title('Бокс-плот распределения')
     plt.show()
 
+    ##Пункт 3
+def Laplassa_func(massiv):
+    # вычисление "вручную"
+    q = 1.25
+    # Находим по таблице значение x = 1.25 и по св-ву интегралов суммируем его самим с собой
+    print("Вероятность, сделанная \"вручную\": ", 0.3944 * 2)
+    # вычисление с помощью питона
+    print("Вероятность по lib", sts.norm().cdf(q) - sts.norm().cdf(-q))
 
-
+    # оценка вероятности *
+    satisfying_values = 0
+    # найдем все значения выборки, подходящие по усл-ю
+    for i in massiv:
+        if abs(i - a) < q * sigma:
+            satisfying_values += 1
+    # найдем отн. частоту
+    rel_freq = satisfying_values / n_points
+    print("Статистическая", rel_freq)
+    # увеличив выборку в 50 раз, точность оценки вероятности увеличится, потому что гистограмма более совпадает с теоретической кривой(в силу збч)
 
 
     ## Пункт 4
@@ -264,6 +281,8 @@ def result_4_punkt(massiv):
 massiv = sort_massiv(generation_norm_random(-2, 3, 110))
 print(massiv.min())
 print(massiv)
+
+# Пункт 1
 calc_abs_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv,
               interval_grouping(calc_k_scott(110, massiv)[0],
                                 calc_k_scott(110, massiv)[1], massiv)[0],
@@ -273,7 +292,7 @@ calc_rel_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv
                                 calc_k_scott(110, massiv)[1], massiv)[0],
               interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1])
 
-result_4_punkt(massiv)
+# Пункт 2
 
 plot_rel_freq(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
                 interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
@@ -288,4 +307,11 @@ plot_empiric_and_teor_func(massiv, interval_grouping(calc_k_scott(110, massiv)[0
                            calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
 
 plot_boxplot(massiv)
-##Пункт 3
+
+#Пункт 3
+Laplassa_func(massiv)
+
+#Пункт 4
+result_4_punkt(massiv)
+
+
