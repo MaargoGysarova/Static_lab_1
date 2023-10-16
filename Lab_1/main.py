@@ -7,7 +7,7 @@ import math
 
 from scipy.stats import norm
 
-sigma = 1
+sigma = 3
 a = -2
 n_points = 110
 
@@ -73,7 +73,7 @@ def calc_abs_freq(h, k, massiv, intervals, intervals_gist):
         sum_abs_freq += i
     print('Сумма абсолютных частот: ', sum_abs_freq)
     ## построение диаграммы абсолютных частот
-    plt.bar(intervals_gist, abs_freq, width=h, align='edge')
+    plt.hist(massiv, bins=k)
     plt.title('Диаграмма абсолютных частот')
     plt.show()
     return abs_freq
@@ -95,7 +95,7 @@ def calc_rel_freq(h, k, massiv, intervals, intervals_gist, abs_freq):
         sum_rel_freq += i
     print('Сумма относительных частот: ', sum_rel_freq)
     ## построение диаграммы относительных частот
-    plt.bar(intervals_gist, rel_freq, width=h, align='edge')
+    plt.hist(massiv, bins=k, density=True)
     plt.title('Диаграмма относительных частот')
     plt.show()
     return rel_freq
@@ -115,10 +115,10 @@ def plot_rel_freq(massiv, intervals, intervals_gist, h, k):
         rel_freq[i] /= len(massiv)
     plt.bar(intervals_gist, rel_freq, width=h, align='edge')
     plt.title('Гистограмма относительных частот')
-    x = np.linspace(a - 4 * sigma, a + 4 * sigma, n_points)
+    x = np.linspace(a - 3 * sigma, a + 3 * sigma, n_points)
     ## плотность распределения
     y = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-(x - a) ** 2 / (2 * sigma ** 2))
-    plt.plot(x, y, color='red', label='Теоретическая кривая')
+    plt.plot(x, y*h, color='red', label='Теоретическая кривая')
     plt.xlabel('Интервалы')
     plt.ylabel('Относительные частоты / Плотность вероятности')
     plt.title('Гистограмма относительных частот и теоретическая кривая распределения')
@@ -141,12 +141,12 @@ def plot_abs_freq_and_teor_freq(massiv, intervals, intervals_gist, h, k):
     ## теоретическая частота распределения случайной величины X
     x = np.linspace(a - 3 * sigma, a + 3 * sigma, n_points)
     y1 = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-(x - a) ** 2 / (2 * sigma ** 2))
-    y = (h * n_points * y1) / sigma
+    y = (h * n_points * y1)
     plt.plot(x, y, color='green', label='Теоретическая частота')
     plt.xlabel('Интервалы')
     plt.xlabel('Значение')
     plt.ylabel('Относительная частота')
-    plt.title('Теоретическая кривая относительных частот для нормального распределения')
+    plt.title('Теоретическая кривая абсолютных частот для нормального распределения')
     plt.legend()
     plt.show()
     plt.show()
@@ -155,20 +155,11 @@ def plot_abs_freq_and_teor_freq(massiv, intervals, intervals_gist, h, k):
 ##Построить по выборке график эмпирической функции распределения случайной величины X
 # (кумуляту относительных частот) и график
 # теоретической функции распределения  случайной величины X
-def plot_empiric_and_teor_func(massiv, intervals, intervals_gist, h, k):
-    rel_freq = []
-    ## вычисление относительных частот
-    for i in range(int(k)):
-        rel_freq.append(0)
-        for j in massiv:
-            if intervals[i][0] <= j < intervals[i][1]:
-                rel_freq[i] += 1
-        rel_freq[i] /= len(massiv)
-    cumulative_y = np.cumsum(rel_freq)
-    plt.step(intervals_gist, cumulative_y, color='blue', label='Эмпирическая функция распределения')
-    plt.xlabel('Значение')
-    plt.ylabel('Эмпирическая функция распределения')
-    plt.title('График эмпирической функции распределения')
+def plot_empiric_and_teor_func(massiv, intervals, intervals_gist, h, k, rel_freq):
+    #эмпирическая функция
+    fig = plt.figure(layout="constrained")
+    axs = fig.subplots(1, 1, sharex=True, sharey=True)
+    axs.ecdf(massiv, label="CDF")
 
     ##график теоретической функции распределения
     x = np.linspace(a - 3 * sigma, a + 3 * sigma, n_points)
@@ -295,7 +286,7 @@ abs_freq = calc_abs_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)
                                 calc_k_scott(110, massiv)[1], massiv)[0],
               interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1])
 
-calc_rel_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv,
+rel_freq = calc_rel_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv,
               interval_grouping(calc_k_scott(110, massiv)[0],
                                 calc_k_scott(110, massiv)[1], massiv)[0],
               interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],abs_freq)
@@ -314,7 +305,7 @@ plot_abs_freq_and_teor_freq(massiv,
 plot_empiric_and_teor_func(massiv,
                            interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
                            interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
-                           calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
+                           calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1],rel_freq)
 
 plot_boxplot(massiv)
 
@@ -322,4 +313,9 @@ plot_boxplot(massiv)
 Laplassa_func(massiv)
 
 # Пункт 4
+print("Размер 110")
 result_4_punkt(massiv)
+print("Размер 5500")
+result_4_punkt(sort_massiv(generation_norm_random(-2, 3, 5500)))
+
+
