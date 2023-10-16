@@ -35,8 +35,8 @@ def plot_norm(a=0, sigma=1, n_points=110):
 def calc_k_scott(n_points, massiv):
     h = 3.5 * calc_std(massiv) / (n_points ** (1 / 3))
     k = int((max(massiv) - min(massiv)) / h)
-    print('h = ', h)
-    print('k = ', k)
+    # print('h = ', h)
+    # print('k = ', k)
     return h, k
 
 
@@ -44,9 +44,9 @@ def interval_grouping(h, k, massiv):
     intervals = []
     for i in range(int(k)):
         intervals.append([massiv.min() + h * i, massiv.min() + h * (i + 1)])
-    print('Количество интервалов: ', k)
-    print('Длина интервала: ', h)
-    print('Интервалы: ', intervals)
+    # print('Количество интервалов: ', k)
+    # print('Длина интервала: ', h)
+    # print('Интервалы: ', intervals)
     intervals_gist = []
     for i in range(int(k)):
         intervals_gist.append(intervals[i][0])
@@ -57,6 +57,9 @@ def interval_grouping(h, k, massiv):
 def calc_abs_freq(h, k, massiv, intervals, intervals_gist):
     ## абсолютные частоты в интервалах группировки
     abs_freq = []
+    print('Количество интервалов: ', k)
+    print('Длина интервала: ', h)
+    print('Интервалы: ', intervals)
     ## вычисление абсолютных частот
     for i in range(int(k)):
         abs_freq.append(0)
@@ -73,18 +76,18 @@ def calc_abs_freq(h, k, massiv, intervals, intervals_gist):
     plt.bar(intervals_gist, abs_freq, width=h, align='edge')
     plt.title('Диаграмма абсолютных частот')
     plt.show()
+    return abs_freq
 
 
-def calc_rel_freq(h, k, massiv, intervals, intervals_gist):
+def calc_rel_freq(h, k, massiv, intervals, intervals_gist, abs_freq):
     ## относительные частоты в интервалах группировки
     rel_freq = []
+    print('Количество интервалов: ', k)
+    print('Длина интервала: ', h)
+    print('Интервалы: ', intervals)
     ## вычисление относительных частот
-    for i in range(int(k)):
-        rel_freq.append(0)
-        for j in massiv:
-            if intervals[i][0] <= j < intervals[i][1]:
-                rel_freq[i] += 1
-        rel_freq[i] /= len(massiv)
+    for i in abs_freq:
+        rel_freq.append(i/n_points)
     print('Относительные частоты: ', rel_freq)
     ## сумма относительных частот
     sum_rel_freq = 0
@@ -101,7 +104,7 @@ def calc_rel_freq(h, k, massiv, intervals, intervals_gist):
 
 
 ## Построить гистограмму и теоритеческую кривую относительных частот
-def plot_rel_freq(massiv,intervals, intervals_gist, h, k):
+def plot_rel_freq(massiv, intervals, intervals_gist, h, k):
     rel_freq = []
     ## вычисление относительных частот
     for i in range(int(k)):
@@ -112,7 +115,7 @@ def plot_rel_freq(massiv,intervals, intervals_gist, h, k):
         rel_freq[i] /= len(massiv)
     plt.bar(intervals_gist, rel_freq, width=h, align='edge')
     plt.title('Гистограмма относительных частот')
-    x = np.linspace(a - 4*sigma, a + 4*sigma, n_points)
+    x = np.linspace(a - 4 * sigma, a + 4 * sigma, n_points)
     ## плотность распределения
     y = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-(x - a) ** 2 / (2 * sigma ** 2))
     plt.plot(x, y, color='red', label='Теоретическая кривая')
@@ -123,8 +126,9 @@ def plot_rel_freq(massiv,intervals, intervals_gist, h, k):
     plt.show()
     plt.show()
 
+
 ##Построить гистограмму абсолютных частот и график теоретической частоты распределения
-def plot_abs_freq_and_teor_freq(massiv,intervals, intervals_gist, h,k):
+def plot_abs_freq_and_teor_freq(massiv, intervals, intervals_gist, h, k):
     abs_freq = []
     ## вычисление абсолютных частот
     for i in range(int(k)):
@@ -135,7 +139,7 @@ def plot_abs_freq_and_teor_freq(massiv,intervals, intervals_gist, h,k):
     plt.bar(intervals_gist, abs_freq, width=h, align='edge')
     plt.title('Гистограмма абсолютных частот')
     ## теоретическая частота распределения случайной величины X
-    x = np.linspace(a - 4*sigma, a + 4*sigma, n_points)
+    x = np.linspace(a - 3 * sigma, a + 3 * sigma, n_points)
     y1 = (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-(x - a) ** 2 / (2 * sigma ** 2))
     y = (h * n_points * y1) / sigma
     plt.plot(x, y, color='green', label='Теоретическая частота')
@@ -147,10 +151,11 @@ def plot_abs_freq_and_teor_freq(massiv,intervals, intervals_gist, h,k):
     plt.show()
     plt.show()
 
+
 ##Построить по выборке график эмпирической функции распределения случайной величины X
 # (кумуляту относительных частот) и график
 # теоретической функции распределения  случайной величины X
-def plot_empiric_and_teor_func(massiv,intervals, intervals_gist, h,k):
+def plot_empiric_and_teor_func(massiv, intervals, intervals_gist, h, k):
     rel_freq = []
     ## вычисление относительных частот
     for i in range(int(k)):
@@ -166,7 +171,7 @@ def plot_empiric_and_teor_func(massiv,intervals, intervals_gist, h,k):
     plt.title('График эмпирической функции распределения')
 
     ##график теоретической функции распределения
-    x = np.linspace(a - 4*sigma, a + 4*sigma, n_points)
+    x = np.linspace(a - 3 * sigma, a + 3 * sigma, n_points)
     y = norm.cdf(x, a, sigma)
     plt.plot(x, y, color='red', label='Теоретическая функция распределения')
     plt.xlabel('Значение')
@@ -175,6 +180,7 @@ def plot_empiric_and_teor_func(massiv,intervals, intervals_gist, h,k):
     plt.legend()
     plt.show()
     plt.show()
+
 
 ##Построить по выборке бокс-плот распределения
 def plot_boxplot(massiv):
@@ -186,6 +192,8 @@ def plot_boxplot(massiv):
     plt.show()
 
     ##Пункт 3
+
+
 def Laplassa_func(massiv):
     # вычисление "вручную"
     q = 1.25
@@ -204,7 +212,6 @@ def Laplassa_func(massiv):
     rel_freq = satisfying_values / n_points
     print("Статистическая", rel_freq)
     # увеличив выборку в 50 раз, точность оценки вероятности увеличится, потому что гистограмма более совпадает с теоретической кривой(в силу збч)
-
 
     ## Пункт 4
 
@@ -283,35 +290,36 @@ print(massiv.min())
 print(massiv)
 
 # Пункт 1
-calc_abs_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv,
+abs_freq = calc_abs_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv,
               interval_grouping(calc_k_scott(110, massiv)[0],
                                 calc_k_scott(110, massiv)[1], massiv)[0],
               interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1])
+
 calc_rel_freq(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv,
               interval_grouping(calc_k_scott(110, massiv)[0],
                                 calc_k_scott(110, massiv)[1], massiv)[0],
-              interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1])
+              interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],abs_freq)
 
 # Пункт 2
 
 plot_rel_freq(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
-                interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
-                calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
+              interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
+              calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
 
-plot_abs_freq_and_teor_freq(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
-                interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
-                calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
+plot_abs_freq_and_teor_freq(massiv,
+                            interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
+                            interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
+                            calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
 
-plot_empiric_and_teor_func(massiv, interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
-                interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
+plot_empiric_and_teor_func(massiv,
+                           interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[0],
+                           interval_grouping(calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1], massiv)[1],
                            calc_k_scott(110, massiv)[0], calc_k_scott(110, massiv)[1])
 
 plot_boxplot(massiv)
 
-#Пункт 3
+# Пункт 3
 Laplassa_func(massiv)
 
-#Пункт 4
+# Пункт 4
 result_4_punkt(massiv)
-
-
